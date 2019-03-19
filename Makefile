@@ -11,7 +11,7 @@ deploy: build-docker
 	docker run -it --rm -v ${HOME}/.aws/credentials:/root/.aws/credentials -v ${HOME}/.aws/config:/root/.aws/config ${GO_PACKAGE_NAME}:latest serverless deploy --stage=prod -v
 
 remove: build-docker
-	docker run -it --rm ${GO_PACKAGE_NAME}:latest serverless remove --stage=prod -v
+	docker run -it --rm -v ${HOME}/.aws/credentials:/root/.aws/credentials -v ${HOME}/.aws/config:/root/.aws/config ${GO_PACKAGE_NAME}:latest serverless remove --stage=prod -v
 
 updatecode-dev-auth: build-docker
 	docker run -it --rm -v ${HOME}/.aws/credentials:/root/.aws/credentials -v ${HOME}/.aws/config:/root/.aws/config ${GO_PACKAGE_NAME}:latest serverless deploy function --function auth --stage=dev -v

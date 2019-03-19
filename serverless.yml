@@ -25,7 +25,7 @@ functions:
 
   index:
     handler: index
-    name: index
+    name: ${self:provider.environment.DYNAMODB_TABLE}_index
     description: First step of the OAuth Handshake
     events:
       - http:
@@ -35,7 +35,7 @@ functions:
 
   auth:
     handler: auth
-    name: auth
+    name: ${self:provider.environment.DYNAMODB_TABLE}_auth
     description: First step of the OAuth Handshake
     events:
       - http:
@@ -45,7 +45,7 @@ functions:
 
   auth_callback:
     handler: auth
-    name: auth_callback
+    name: ${self:provider.environment.DYNAMODB_TABLE}_auth_callback
     description: Callback function for the OAuth Handshake
     events:
       - http:

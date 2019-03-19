@@ -2,43 +2,14 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/bold-commerce/go-shopify"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
+//	"github.com/bold-commerce/go-shopify"
+//	"github.com/aws/aws-sdk-go/aws/session"
+//	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"os"
 )
-
-var db = dynamodb.New(session.New(), aws.NewConfig().WithRegion("eu-west-1"))
-
-func get_shop(isbn string) (*book, error) {
-
-	input := &dynamodb.GetItemInput{
-		TableName: aws.String(os.Getenv("DYNAMODB_TABLE")),
-		Key: map[string]*dynamodb.AttributeValue{
-			"id": {
-				S: aws.String(isbn),
-			},
-		},
-	}
-
-	result, err := db.GetItem(input)
-	if err != nil {
-		return nil, err
-	}
-	if result.Item == nil {
-		return nil, nil
-	}
-
-	bk := new(book)
-	err = dynamodbattribute.UnmarshalMap(result.Item, bk)
-	if err != nil {
-		return nil, err
-	}
-
-	return bk, nil
-}
 
 func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
@@ -48,12 +19,15 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 	id := request.QueryStringParameters["shop"]
 	timestamp := request.QueryStringParameters["timestamp"]
 
-
+	fmt.Printf("The date is %s\n", hmac)
+	fmt.Printf("The date is %s\n", id)
+	fmt.Printf("The date is %s\n", timestamp)
+	fmt.Printf("The date is %s\n", os.Getenv("DYNAMODB_TABLE"))
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 301,
 		Headers: map[string]string{
-			"Location": authUrl,
+			"Location": "https://sl92kqr8sc.execute-api.eu-west-1.amazonaws.com/prod/auth",
 		},
 	}, errors.New("something went wrong!")
 }
