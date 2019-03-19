@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"errors"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/bold-commerce/go-shopify"
@@ -13,7 +13,7 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 	app := goshopify.App {
 		ApiKey:      os.Getenv("SHOPIFY_API_KEY"),
 		ApiSecret:   os.Getenv("SHOPIFY_API_SECRET_KEY"),
-		RedirectUrl: fmt.Sprintf("%s/%s", os.Getenv("BASE_URL"), "auth/callback"),
+		RedirectUrl: "https://sl92kqr8sc.execute-api.eu-west-1.amazonaws.com/prod/auth/callback",
 		Scope:       os.Getenv("SHOPIFY_SCOPE"),
 	}
 
@@ -25,7 +25,7 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 		Headers: map[string]string{
 			"Location": authUrl,
 		},
-	}, nil
+	}, errors.New("something went wrong!")
 }
 
 func main() {

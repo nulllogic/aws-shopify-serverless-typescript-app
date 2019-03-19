@@ -1,0 +1,17 @@
+GO_PACKAGE_NAME=shopify_app
+GO_PACKAGE_PATH=github.com/tkeech1/${GO_PACKAGE_NAME}
+
+test:
+	go test ./...
+
+build-docker:
+	docker build -t ${GO_PACKAGE_NAME}:latest .
+
+deploy: build-docker
+	docker run -it --rm -v ${HOME}/.aws/credentials:/root/.aws/credentials -v ${HOME}/.aws/config:/root/.aws/config ${GO_PACKAGE_NAME}:latest serverless deploy --stage=prod -v
+
+remove: build-docker
+	docker run -it --rm ${GO_PACKAGE_NAME}:latest serverless remove --stage=prod -v
+
+updatecode-dev-auth: build-docker
+	docker run -it --rm -v ${HOME}/.aws/credentials:/root/.aws/credentials -v ${HOME}/.aws/config:/root/.aws/config ${GO_PACKAGE_NAME}:latest serverless deploy function --function auth --stage=dev -v

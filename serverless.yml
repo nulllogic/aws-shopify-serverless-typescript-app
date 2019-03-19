@@ -1,9 +1,5 @@
 service: EasyMetaFields
 
-plugins:
-  - serverless-dynamodb-local
-  - serverless-offline
-
 provider:
   name: aws
   runtime: go1.x
@@ -20,13 +16,25 @@ package:
   exclude:
     - .gitignore
     - serverless.yml
-    - app
     - node_modules
+    - src
+  include:
+    - auth
 
 functions:
 
+  index:
+    handler: index
+    name: index
+    description: First step of the OAuth Handshake
+    events:
+      - http:
+          path: /
+          method: get
+          cors: true
+
   auth:
-    handler: bin/auth
+    handler: auth
     name: auth
     description: First step of the OAuth Handshake
     events:
@@ -36,12 +44,12 @@ functions:
           cors: true
 
   auth_callback:
-    handler: bin/auth
+    handler: auth
     name: auth_callback
     description: Callback function for the OAuth Handshake
     events:
       - http:
-          path: /callback
+          path: /auth/callback
           method: get
           cors: true
 
