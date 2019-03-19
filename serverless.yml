@@ -1,0 +1,75 @@
+service: EasyMetaFields
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: go1.x
+  stage: prod
+  region: eu-west-1
+
+  environment:
+    SHOPIFY_API_KEY: ${ssm:/<%= appname %>/${self:provider.stage}/SHOPIFY_API_KEY}
+    SHOPIFY_API_SECRET: ${ssm:/<%= appname %>/${self:provider.stage}/SHOPIFY_API_SECRET}
+    SHOPIFY_SCOPE: "read_script_tags:write_script_tags"
+    DYNAMODB_TABLE: "easymetafields"
+
+package:
+  exclude:
+    - .gitignore
+    - serverless.yml
+    - app
+    - node_modules
+
+functions:
+
+  auth:
+    handler: bin/auth
+    name: auth
+    description: First step of the OAuth Handshake
+    events:
+      - http:
+          path: /auth
+          method: get
+          cors: true
+
+  auth_callback:
+    handler: bin/auth
+    name: auth_callback
+    description: Callback function for the OAuth Handshake
+    events:
+      - http:
+          path: /callback
+          method: get
+          cors: true
+
+
+resources:
+  Resources:
+    ShopsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+  Outputs:
+    ShopsTable:
+      Description: "The name of the Shops Table"
+      Value:
+        Ref: ShopsTable
+    ShopsTableArn:
+      Description: "The ARN for the Shops Table"
+      Value:
+        Fn::GetAtt:
+          - ShopsTable
+          - Arn
