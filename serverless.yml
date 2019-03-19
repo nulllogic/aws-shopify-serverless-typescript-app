@@ -7,9 +7,9 @@ provider:
   region: eu-west-1
 
   environment:
-    SHOPIFY_API_KEY: ${ssm:/<%= appname %>/${self:provider.stage}/SHOPIFY_API_KEY}
-    SHOPIFY_API_SECRET: ${ssm:/<%= appname %>/${self:provider.stage}/SHOPIFY_API_SECRET}
-    SHOPIFY_SCOPE: "read_script_tags:write_script_tags"
+    SHOPIFY_API_KEY: ${ssm:/${self:service}/${self:provider.stage}/SHOPIFY_API_KEY}
+    SHOPIFY_API_SECRET: ${ssm:/${self:service}/${self:provider.stage}/SHOPIFY_API_SECRET}
+    SHOPIFY_SCOPE: "read_script_tags,write_script_tags,read_orders,write_orders,read_products,write_products"
     DYNAMODB_TABLE: "easymetafields"
 
 package:

@@ -11,9 +11,11 @@ RUN go get github.com/aws/aws-lambda-go/lambda \
 
 COPY src/index.go ./src/
 COPY src/auth.go ./src/
+COPY src/auth_callback.go ./src/
 
 RUN env GOOS=linux GOARCH=amd64 go build -v -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o bin/index src/index.go
 RUN env GOOS=linux GOARCH=amd64 go build -v -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o bin/auth src/auth.go
+RUN env GOOS=linux GOARCH=amd64 go build -v -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o bin/auth_callback src/auth_callback.go
 
 #--------------------------------
 
@@ -25,5 +27,6 @@ WORKDIR /app
 
 COPY --from=golang_build /go/bin/index .
 COPY --from=golang_build /go/bin/auth .
+COPY --from=golang_build /go/bin/auth_callback .
 
 COPY serverless.yml .
