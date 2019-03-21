@@ -60,12 +60,17 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+
         AttributeDefinitions:
-          - AttributeName: id
+          -
+            AttributeName: shopid
             AttributeType: S
+
         KeySchema:
-          - AttributeName: id
+          -
+            AttributeName: shopid
             KeyType: HASH
+
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1

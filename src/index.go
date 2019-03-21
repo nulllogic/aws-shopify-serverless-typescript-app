@@ -7,14 +7,60 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"log"
 	"os"
+
 //	"github.com/bold-commerce/go-shopify"
-//	"github.com/aws/aws-sdk-go/aws/session"
-//	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 //	"os"
 )
 
+// Declare a new DynamoDB instance. Note that this is safe for concurrent
+var db = dynamodb.New(session.New(), aws.NewConfig().WithRegion("us-west-1"))
+
+type ShopInfo struct {
+	Token string`json:"token"`
+}
+
 type Shop struct {
-	Id string `json:"id"`
+	ShopID string`json:"shopid"`
+	Info ShopInfo`json:"info"`
+}
+
+func getShop(shopURL string) (*Shop, error) {
+	// Prepare the input for the query.
+	input := &dynamodb.GetItemInput{
+		TableName: aws.String("easymetafields"),
+		Key: map[string]*dynamodb.AttributeValue{
+			"shopid": {
+				S: aws.String(shopURL),
+			},
+		},
+	}
+
+	// Retrieve the item from DynamoDB. If no matching item is found
+	// return nil.
+	result, err := db.GetItem(input)
+	if err != nil {
+		return nil, err
+	}
+	if result.Item == nil {
+		return nil, nil
+	}
+
+	// The result.Item object returned has the underlying type
+	// map[string]*AttributeValue. We can use the UnmarshalMap helper
+	// to parse this straight into the fields of a struct. Note:
+	// UnmarshalListOfMaps also exists if you are working with multiple
+	// items.
+	shop := new(Shop)
+	err = dynamodbattribute.UnmarshalMap(result.Item, shop)
+	if err != nil {
+		return nil, err
+	}
+
+	return shop, nil
 }
 
 func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -29,11 +75,21 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 		fmt.Printf("    %s: %s\n", key, value)
 	}
 
-	// If param is passed, when app is installing
+	shop, err := getShop(request.QueryStringParameters["shop"])
+
+	if err != nil { // continue
+		log.Println(shop)
+		return events.APIGatewayProxyResponse{
+			StatusCode: 200,
+			Body: "<h1>gg</h1>",
+		}, nil
+	}
+
+	// If param hmac is passed, app is installing, do redirect
 	hmac, ok := request.QueryStringParameters["hmac"]
 
 	if ok {
-		log.Println("Url Param 'key' is missing")
+		log.Println("Url Param 'key' is missing" + hmac)
 		return events.APIGatewayProxyResponse{
 			StatusCode: 301,
 			Headers: map[string]string{
@@ -41,8 +97,6 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 			},
 		}, nil
 	}
-
-	fmt.Printf("%s", hmac)
 
 	// If param is passed, when app is installing
 	hmac2, ok := request.QueryStringParameters["hmac2"]
