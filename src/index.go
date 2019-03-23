@@ -83,6 +83,7 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
+		Headers:    map[string]string{"Content-Type": "text/html; charset=utf-8"},
 		Body:       "<h1>gg</h1>",
 	}, nil
 }
