@@ -104,7 +104,7 @@ resources:
     S3Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.environment.DYNAMODB_TABLE}_bucket
+        BucketName: ${self:provider.environment.DYNAMODB_TABLE}-bucket
 
 
   Outputs:
