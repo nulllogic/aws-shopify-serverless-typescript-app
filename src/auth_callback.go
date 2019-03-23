@@ -71,7 +71,7 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 	// Initialize a session in us-west-2 that the SDK will use to load
 	// credentials from the shared credentials file ~/.aws/credentials.
 	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String("eu-west-1")},
+		Region: aws.String(os.Getenv("AWS_REGION"))},
 	)
 
 	// Create DynamoDB client

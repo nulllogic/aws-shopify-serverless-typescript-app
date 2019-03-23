@@ -8,17 +8,16 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"os"
 )
 
 type ShopInfo struct {
-	Token string `json:"token"`
+	Token string`json:"token"`
 }
 
 type Shop struct {
-	ShopID string   `json:"shopid"`
-	Info   ShopInfo `json:"info"`
+	ShopID string`json:"shopid"`
+	Info ShopInfo`json:"info"`
 }
 
 func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -26,17 +25,11 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 	// Initialize a session in us-west-2 that the SDK will use to load
 	// credentials from the shared credentials file ~/.aws/credentials.
 	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String("eu-west-1")},
+		Region: aws.String(os.Getenv("AWS_REGION"))},
 	)
 
 	// Create DynamoDB client
 	svc := dynamodb.New(sess)
-
-	item := Shop{
-		ShopID: request.QueryStringParameters["shop"],
-	}
-
-	av, err := dynamodbattribute.MarshalMap(item)
 
 	if err != nil {
 		fmt.Println("Got error marshalling map:")
@@ -45,8 +38,10 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 	}
 
 	input := &dynamodb.DeleteItemInput{
-		Key:       av,
 		TableName: aws.String(os.Getenv("DYNAMODB_TABLE")),
+		Key: map[string]*dynamodb.AttributeValue{
+			"shopid": {S: aws.String(request.QueryStringParameters["shop"])},
+		},
 	}
 
 	_, err = svc.DeleteItem(input)

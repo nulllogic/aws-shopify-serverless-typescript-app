@@ -36,7 +36,7 @@ func getShop(shopURL string) (Shop, error) {
 	var shop Shop
 
 	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String("eu-west-1")},
+		Region: aws.String(os.Getenv("AWS_REGION"))},
 	)
 
 	// Create DynamoDB client
