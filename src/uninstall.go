@@ -12,12 +12,12 @@ import (
 )
 
 type ShopInfo struct {
-	Token string`json:"token"`
+	Token string `json:"token"`
 }
 
 type Shop struct {
-	ShopID string`json:"shopid"`
-	Info ShopInfo`json:"info"`
+	ShopID string   `json:"shopid"`
+	Info   ShopInfo `json:"info"`
 }
 
 func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {

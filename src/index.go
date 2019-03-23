@@ -11,21 +11,21 @@ import (
 	//"log"
 	//"os"
 
-//	"github.com/bold-commerce/go-shopify"
+	//	"github.com/bold-commerce/go-shopify"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-//	"os"
+	//	"os"
 )
 
 type ShopInfo struct {
-	Token string`json:"token"`
+	Token string `json:"token"`
 }
 
 type Shop struct {
-	ShopID string`json:"shopid"`
-	Info ShopInfo`json:"info"`
+	ShopID string   `json:"shopid"`
+	Info   ShopInfo `json:"info"`
 }
 
 func getApiUrl(id string, location string, stage string) (string) {
@@ -66,12 +66,12 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 200,
-			Body: "Database error",
+			Body:       "Database error",
 		}, nil
 	}
 
 	// If shop is empty
-	if (( Shop{}) == shop && request.QueryStringParameters["hmac2"] == "" ){
+	if ((Shop{}) == shop && request.QueryStringParameters["hmac2"] == "") {
 
 		return events.APIGatewayProxyResponse{
 			StatusCode: 301,
@@ -83,7 +83,7 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body: "<h1>gg</h1>",
+		Body:       "<h1>gg</h1>",
 	}, nil
 }
 

@@ -8,17 +8,16 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"github.com/bold-commerce/go-shopify"
 	"os"
 )
 
 type ShopInfo struct {
-	Token string`json:"token"`
+	Token string `json:"token"`
 }
 
 type Shop struct {
-	ShopID string`json:"shopid"`
-	Info ShopInfo`json:"info"`
+	ShopID string   `json:"shopid"`
+	Info   ShopInfo `json:"info"`
 }
 
 func GetFuncURL(funcName string) string {
@@ -83,7 +82,7 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 
 	item := Shop{
 		ShopID: request.QueryStringParameters["shop"],
-		Info: info,
+		Info:   info,
 	}
 
 	av, err := dynamodbattribute.MarshalMap(item)
@@ -96,7 +95,7 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 
 	// Create item in table Movies
 	input := &dynamodb.PutItemInput{
-		Item: av,
+		Item:      av,
 		TableName: aws.String(os.Getenv("DYNAMODB_TABLE")),
 	}
 
