@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: golang:1.8
+
+    working_directory: /go/src/github.com/vladimirlukyanov/shopify-serverless-go-app
+
+    steps:
+      - checkout
+
+#      - run:
+#          name: Install dependencies
+#          command: cd lambda && go get -v
+#
+#      - run:
+#          name: Install test dependencies
+#          command: cd lambda && go get github.com/stretchr/testify
+#
+#      - run:
+#          name: Run Unit Tests
+#          command: cd lambda && go test
