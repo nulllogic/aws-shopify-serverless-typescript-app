@@ -8,12 +8,18 @@ import (
 	"os"
 )
 
+func getApiUrl(id string, location string, stage string) (string) {
+	return "https://" + id + ".execute-api." + location + ".amazonaws.com/" + stage
+}
+
 func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+
+	url := getApiUrl(request.RequestContext.APIID, os.Getenv("AWS_REGION"), request.RequestContext.Stage)
 
 	app := goshopify.App{
 		ApiKey:      os.Getenv("SHOPIFY_API_KEY"),
-		ApiSecret:   os.Getenv("SHOPIFY_API_SECRET_KEY"),
-		RedirectUrl: "https://wephsgf82d.execute-api.eu-west-1.amazonaws.com/prod/auth/callback",
+		ApiSecret:   os.Getenv("SHOPIFY_API_SECRET"),
+		RedirectUrl: url + "/auth/callback",
 		Scope:       os.Getenv("SHOPIFY_SCOPE"),
 	}
 

@@ -1,5 +1,4 @@
 GO_PACKAGE_NAME=shopify_app
-GO_PACKAGE_PATH=github.com/tkeech1/${GO_PACKAGE_NAME}
 
 test:
 	go test ./...
