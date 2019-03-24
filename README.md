@@ -10,6 +10,8 @@ Easy way to setup your first Shopify application
   <img src="./img/logo.gif" alt="NullLogic logo">
 </p>
 
+
+
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
 
@@ -24,7 +26,7 @@ Easy way to setup your first Shopify application
 * [Donate](#donate)
 * [Acknowledgements](#acknowledgements)
 
-
+<hr />
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -48,13 +50,15 @@ This section should list any major frameworks that you built your project using.
 * [JQuery](https://jquery.com)
 * [Laravel](https://laravel.com)
 
-
+<hr />
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
 This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
+
+<hr />
 
 ### Prerequisites
 
@@ -63,6 +67,8 @@ This is an example of how to list things you need to use the software and how to
 ```sh
 npm install npm@latest -g
 ```
+
+<hr />
 
 ### Installation
 
@@ -80,7 +86,7 @@ npm install
 const API_KEY = 'ENTER YOUR API';
 ```
 
-
+<hr />
 
 <!-- USAGE EXAMPLES -->
 ## Usage
@@ -89,7 +95,7 @@ Use this space to show useful examples of how a project can be used. Additional 
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
-
+<hr />
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -102,7 +108,7 @@ Contributions are what make the open source community such an amazing place to b
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-
+<hr />
 
 <!-- LICENSE -->
 ## License
@@ -110,6 +116,7 @@ Contributions are what make the open source community such an amazing place to b
 Distributed under the MIT License. See `LICENSE` for more information.
 
 
+<hr />
 
 <!-- DONATE -->
 ## Donate
@@ -127,6 +134,7 @@ Become a Patreon:
     <img src="./img/patreon-button-png-10.png" height="40" />
 </a>
 
+<hr />
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
