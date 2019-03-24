@@ -116,13 +116,15 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 
 Support by PayPal:
+
 <a href="https://www.paypal.me/vladimirlukyanov">
-    <img src="./img/patreon-button-png-10.png" />
+    <img src="./img/paypal-button-png-10.png" height="40" />
 </a>
 
 Become Patreon:
+
 <a href="https://www.patreon.com/vladimirlukyanov">
-    <img src="./img/patreon-button-png-10.png" />
+    <img src="./img/patreon-button-png-10.png" height="40" />
 </a>
 
 
