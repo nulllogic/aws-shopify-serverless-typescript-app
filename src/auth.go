@@ -15,7 +15,6 @@ func getApiUrl(id string, location string, stage string) (string) {
 func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
 	url := getApiUrl(request.RequestContext.APIID, os.Getenv("AWS_REGION"), request.RequestContext.Stage)
-
 	app := goshopify.App{
 		ApiKey:      os.Getenv("SHOPIFY_API_KEY"),
 		ApiSecret:   os.Getenv("SHOPIFY_API_SECRET"),

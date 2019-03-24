@@ -24,12 +24,16 @@ RUN env GOOS=linux GOARCH=amd64 go build -v -ldflags '-d -s -w' -a -tags netgo -
 FROM node:latest as serverless
 
 RUN npm install -g serverless --unsafe-perm=true
+RUN npm install serverless-finch --unsafe-perm=true
+
 RUN mkdir /app
 WORKDIR /app
 
 COPY --from=golang_build /go/bin/index .
 COPY --from=golang_build /go/bin/auth .
 COPY --from=golang_build /go/bin/auth_callback .
-COPY --from=golang_build /go/bin/uninstall .
+COPY --from=golang_build /go/bin/uninstall ./webhooks/uninstall
 
+ADD client ./client
 COPY serverless.yml .
+RUN ls -la

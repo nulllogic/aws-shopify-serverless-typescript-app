@@ -1,3 +1,6 @@
+plugins:
+  - serverless-finch
+
 service: EasyMetaFields
 
 provider:
@@ -27,13 +30,11 @@ provider:
         - "Fn::Join": ["", ["arn:aws:dynamodb:" , {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"} , ":table/${self:provider.environment.DYNAMODB_TABLE}"]]
 
 package:
+  individually: true
   exclude:
-    - .gitignore
-    - serverless.yml
-    - node_modules
-    - src
-  include:
-    - auth
+    - ./**
+
+
 
 functions:
 
@@ -46,7 +47,9 @@ functions:
           path: /
           method: get
           cors: true
-
+    package:
+      include:
+        - index
   auth:
     handler: auth
     name: ${self:provider.environment.DYNAMODB_TABLE}_auth
@@ -56,6 +59,9 @@ functions:
           path: /auth
           method: get
           cors: true
+    package:
+      include:
+        - auth
 
   auth_callback:
     handler: auth_callback
@@ -67,6 +73,9 @@ functions:
           path: /auth/callback
           method: get
           cors: true
+    package:
+      include:
+        - auth_callback
 
   uninstall:
     handler: uninstall
@@ -78,6 +87,9 @@ functions:
           path: /webhooks/uninstall
           method: post
           cors: true
+    package:
+      include:
+        - ./webhooks/uninstall
 
 
 resources:
@@ -101,11 +113,21 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+
     S3Bucket:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:provider.environment.DYNAMODB_TABLE}-bucket
-
+        AccessControl: PublicRead
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods:
+                - GET
+                - HEAD
+              AllowedOrigins:
+                - "*"
+              AllowedHeaders:
+                - "*"
 
   Outputs:
 
@@ -122,3 +144,8 @@ resources:
           - Arn
       Export:
         Name: ShopsTableArn
+
+custom:
+  client:
+    bucketName: ${self:provider.environment.DYNAMODB_TABLE}-bucket
+    manageResources: false
