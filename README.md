@@ -1,11 +1,11 @@
 # Shopify Serverless GO app
 Easy way to setup your first Shopify application
-<p align="center"> [ Demo ] — [ Documentation ] </p>
 
 <p align="center">
   <img src="./img/process.png" alt="Process example">
 </p>
 <hr />
+<p align="center"> [ Demo ] — [ Documentation ] </p>
 <p align="center">
   <img src="./img/logo.gif" alt="NullLogic logo">
 </p>
@@ -115,6 +115,15 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Donate
 
 
+Support by PayPal:
+<a href="https://www.paypal.me/vladimirlukyanov">
+    <img src="./img/patreon-button-png-10.png" />
+</a>
+
+Become Patreon:
+<a href="https://www.patreon.com/vladimirlukyanov">
+    <img src="./img/patreon-button-png-10.png" />
+</a>
 
 
 <!-- ACKNOWLEDGEMENTS -->
