@@ -17,6 +17,8 @@ COPY src/uninstall.go ./src/
 RUN env GOOS=linux GOARCH=amd64 go build -v -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o bin/index src/index.go
 RUN env GOOS=linux GOARCH=amd64 go build -v -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o bin/auth src/auth.go
 RUN env GOOS=linux GOARCH=amd64 go build -v -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o bin/auth_callback src/auth_callback.go
+
+# Webhooks
 RUN env GOOS=linux GOARCH=amd64 go build -v -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o bin/uninstall src/uninstall.go
 
 #--------------------------------
@@ -36,4 +38,8 @@ COPY --from=golang_build /go/bin/uninstall ./webhooks/uninstall
 
 ADD client ./client
 COPY serverless.yml .
-RUN ls -la
+
+ADD entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

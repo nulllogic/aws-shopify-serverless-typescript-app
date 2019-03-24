@@ -7,7 +7,7 @@ build-docker:
 	docker build -t ${GO_PACKAGE_NAME}:latest .
 
 deploy: build-docker
-	docker run -it --rm -v ${HOME}/.aws/credentials:/root/.aws/credentials -v ${HOME}/.aws/config:/root/.aws/config ${GO_PACKAGE_NAME}:latest serverless deploy --stage=prod -v ; serverless client deploy --no-confirm
+	docker run -it --rm -v ${HOME}/.aws/credentials:/root/.aws/credentials -v ${HOME}/.aws/config:/root/.aws/config ${GO_PACKAGE_NAME}:latest
 
 remove: build-docker
 	docker run -it --rm -v ${HOME}/.aws/credentials:/root/.aws/credentials -v ${HOME}/.aws/config:/root/.aws/config ${GO_PACKAGE_NAME}:latest serverless remove --stage=prod -v
