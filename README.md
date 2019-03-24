@@ -121,6 +121,8 @@ Support by PayPal:
     <img src="./img/paypal-button-png-10.png" height="40" />
 </a>
 
+<br />
+
 
 Become a Patreon:
 
