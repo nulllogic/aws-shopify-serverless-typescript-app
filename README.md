@@ -117,12 +117,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Support by PayPal:
 
-<a href="https://www.paypal.me/vladimirlukyanov">
+<p><a href="https://www.paypal.me/vladimirlukyanov">
     <img src="./img/paypal-button-png-10.png" height="40" />
-</a>
-
-<br />
-
+</a></p>
 
 Become a Patreon:
 
