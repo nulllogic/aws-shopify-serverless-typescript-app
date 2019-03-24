@@ -81,9 +81,10 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 	}
 
 	return events.APIGatewayProxyResponse{
-		StatusCode: 200,
-		Headers:    map[string]string{"Content-Type": "text/html; charset=utf-8"},
-		Body:       "<h1>gg</h1>",
+		StatusCode: 301,
+		Headers: map[string]string{
+			"Location": "https://s3."+ os.Getenv("AWS_REGION") +".amazonaws.com/" + os.Getenv("DYNAMODB_TABLE") + "-bucket" + "/index.html?shop=" + request.QueryStringParameters["shop"],
+		},
 	}, nil
 }
 
