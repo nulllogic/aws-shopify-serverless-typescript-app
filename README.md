@@ -121,7 +121,8 @@ Support by PayPal:
     <img src="./img/paypal-button-png-10.png" height="40" />
 </a>
 
-Become Patreon:
+
+Become a Patreon:
 
 <a href="https://www.patreon.com/vladimirlukyanov">
     <img src="./img/patreon-button-png-10.png" height="40" />
