@@ -1,12 +1,9 @@
-import React, {Component} from 'react';
-import { BrowserRouter as Router } from "react-router-dom";
-import routes from './routes';
-
 import {
     Layout,
     Page,
     FooterHelp,
     Card,
+    Link,
     Button,
     FormLayout,
     TextField,
@@ -15,8 +12,11 @@ import {
     SettingToggle,
     AppProvider,
 } from '@shopify/polaris';
+import React, {Component} from "react";
+import {BrowserRouter as Router} from "react-router-dom";
+import routes from "../routes";
 
-class App extends Component {
+class Welcome extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -39,11 +39,37 @@ class App extends Component {
         ];
 
         return (
-            <AppProvider apiKey={window.apiKey} shopOrigin={window.shopOrigin} forceRedirect={true}>
-                <Router>
-                    {routes}
-                </Router>
-            </AppProvider>
+
+            <Page
+                title="Polaris"
+                breadcrumbs={breadcrumbs}
+                primaryAction={primaryAction}
+                secondaryActions={secondaryActions}
+            >
+                <Layout>
+                    <Layout.AnnotatedSection
+                        title="Style"
+                        description="Customize the style of your checkout"
+                    >
+                        <Button onClick={() => { this.props.history.push("/new/url") }}>Test navigation</Button>
+
+                        <SettingToggle
+                            action={{
+                                content: 'Customize Checkout',
+                            }}
+                        >
+                            Upload your store’s logo, change colors and fonts, and more.
+                        </SettingToggle>
+                    </Layout.AnnotatedSection>
+
+                    <Layout.Section>
+                        <FooterHelp>
+                            For more details on Polaris, visit our{' '}
+                            <Link url="https://polaris.shopify.com">style guide</Link>.
+                        </FooterHelp>
+                    </Layout.Section>
+                </Layout>
+            </Page>
         );
     }
 
@@ -108,4 +134,4 @@ class App extends Component {
     }
 }
 
-export default App;
+export default Welcome;
