@@ -70,7 +70,7 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 	}
 
 	// If shop is empty
-	if ((Shop{}) == shop && request.QueryStringParameters["hmac2"] == "") {
+	if ((Shop{}) == shop && request.QueryStringParameters["code"] == "") {
 
 		return events.APIGatewayProxyResponse{
 			StatusCode: 301,
@@ -80,10 +80,19 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 		}, nil
 	}
 
+	if request.QueryStringParameters["code"] == "" {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 301,
+			Headers: map[string]string{
+				"Location": "https://s3."+ os.Getenv("AWS_REGION") +".amazonaws.com/" + os.Getenv("DYNAMODB_TABLE") + "-bucket" + "/index.html?client_id="+ request.QueryStringParameters["code"] + "&shop=" + request.QueryStringParameters["shop"],
+			},
+		}, nil
+	}
+
 	return events.APIGatewayProxyResponse{
 		StatusCode: 301,
 		Headers: map[string]string{
-			"Location": "https://s3."+ os.Getenv("AWS_REGION") +".amazonaws.com/" + os.Getenv("DYNAMODB_TABLE") + "-bucket" + "/index.html?shop=" + request.QueryStringParameters["shop"],
+			"Location": "https://s3."+ os.Getenv("AWS_REGION") +".amazonaws.com/" + os.Getenv("DYNAMODB_TABLE") + "-bucket" + "/index.html?client_id="+ os.Getenv("SHOPIFY_API_KEY") + "&shop=" + request.QueryStringParameters["shop"],
 		},
 	}, nil
 }

@@ -54,7 +54,7 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 	app := goshopify.App{
 		ApiKey:      os.Getenv("SHOPIFY_API_KEY"),
 		ApiSecret:   os.Getenv("SHOPIFY_API_SECRET"),
-		RedirectUrl: url + "/?shop=" + request.QueryStringParameters["shop"],
+		RedirectUrl: url + "/?client_id="+ os.Getenv("SHOPIFY_API_KEY") +"&shop=" + request.QueryStringParameters["shop"],
 		Scope:       os.Getenv("SHOPIFY_SCOPE"),
 	}
 
@@ -122,7 +122,7 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 	return events.APIGatewayProxyResponse{
 		StatusCode: 301,
 		Headers: map[string]string{
-			"Location": url + "/?hmac2=123",
+			"Location": url + "/?shop="+ shopName +"&code=" + code,
 		},
 	}, nil
 }

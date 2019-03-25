@@ -81,7 +81,7 @@ functions:
         - auth_callback
 
   uninstall:
-    handler: uninstall
+    handler: webhooks/uninstall
     name: ${self:provider.environment.DYNAMODB_TABLE}_webhooks_uninstall
     description: Callback function for the OAuth Handshake
 
@@ -92,7 +92,7 @@ functions:
           cors: true
     package:
       include:
-        - ./webhooks/uninstall
+        - webhooks/uninstall
 
 
 resources:
