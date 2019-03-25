@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="https://sdks.shopifycdn.com/polaris/latest/polaris.css">
 </head>
 <body>
+<script>
+    window.apiKey = location.search.split('client_id')[1];
+    window.shopOrigin = location.search.split('shop')[1];
+</script>
 <div id="root"></div>
 </body>
 </html>

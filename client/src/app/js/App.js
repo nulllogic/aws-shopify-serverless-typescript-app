@@ -37,7 +37,7 @@ class App extends Component {
         ];
 
         return (
-            <AppProvider apiKey="YOUR_API_KEY" shopOrigin="SHOP_ORIGIN">
+            <AppProvider apiKey={window.apiKey} shopOrigin={window.shopOrigin}>
                 <Page
                     title="Polaris"
                     breadcrumbs={breadcrumbs}
