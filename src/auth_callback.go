@@ -51,17 +51,18 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 
 	url := getApiUrl(request.RequestContext.APIID, os.Getenv("AWS_REGION"), request.RequestContext.Stage)
 
+
+	shopName := request.QueryStringParameters["shop"]
+	code := request.QueryStringParameters["code"]
+
 	app := goshopify.App{
 		ApiKey:      os.Getenv("SHOPIFY_API_KEY"),
 		ApiSecret:   os.Getenv("SHOPIFY_API_SECRET"),
-		RedirectUrl: url + "/?client_id="+ os.Getenv("SHOPIFY_API_KEY") +"&shop=" + request.QueryStringParameters["shop"],
+		RedirectUrl: "https://" + shopName + "/admin/apps/" + os.Getenv("SHOPIFY_API_KEY") + "/?app_api_key=" + os.Getenv("SHOPIFY_API_KEY"),
 		Scope:       os.Getenv("SHOPIFY_SCOPE"),
 	}
 
 	// get access token
-	shopName := request.QueryStringParameters["shop"]
-	code := request.QueryStringParameters["code"]
-
 	shopifyAccessToken, err := app.GetAccessToken(shopName, code)
 
 	if err != nil {
@@ -122,7 +123,8 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 	return events.APIGatewayProxyResponse{
 		StatusCode: 301,
 		Headers: map[string]string{
-			"Location": url + "/?shop="+ shopName +"&code=" + code,
+			// Do redirect to the app inside Shopify
+			"Location": "https://" + shopName + "/admin/apps/" + os.Getenv("SHOPIFY_API_KEY") + "/?app_api_key=" + os.Getenv("SHOPIFY_API_KEY"),
 		},
 	}, nil
 }

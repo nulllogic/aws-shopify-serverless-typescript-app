@@ -37,7 +37,7 @@ class App extends Component {
         ];
 
         return (
-            <AppProvider apiKey={window.apiKey} shopOrigin={window.shopOrigin}>
+            <AppProvider apiKey={window.apiKey} shopOrigin={window.shopOrigin} forceRedirect={true}>
                 <Page
                     title="Polaris"
                     breadcrumbs={breadcrumbs}
