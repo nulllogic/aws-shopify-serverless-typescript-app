@@ -1,11 +1,12 @@
 plugins:
   - serverless-finch
+  - serverless-offline
 
-service: EasyMetaFields
+service: easyfields
 
 provider:
   name: aws
-  runtime: go1.x
+  runtime: nodejs12.x
   stage: prod
   region: eu-west-1
 
@@ -13,37 +14,49 @@ provider:
     SHOPIFY_API_KEY: ${ssm:/${self:service}/${self:provider.stage}/SHOPIFY_API_KEY}
     SHOPIFY_API_SECRET: ${ssm:/${self:service}/${self:provider.stage}/SHOPIFY_API_SECRET}
     SHOPIFY_SCOPE: "read_script_tags,write_script_tags,read_orders,write_orders,read_products,write_products"
-    DYNAMODB_TABLE: "easymetafields"
+    APP_NAME : "shopifyapp" # your app name
 
 
   iamRoleStatements: # permissions for all of your functions can be set here
     - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+        - s3:Get*
+        - s3:List*
+      Resource:
+        - "Fn::Join": ["", ["arn:aws:s3:::${self:service}-bucket", "/*" ] ]
+    - Effect: Allow
       Action: # Gives permission to DynamoDB tables in a specific region
-        - dynamodb:DescribeTable
         - dynamodb:Query
         - dynamodb:Scan
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-        - s3:Get*
-        - s3:List*
-      Resource:
-        - "Fn::Join": ["", ["arn:aws:dynamodb:" , {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"} , ":table/${self:provider.environment.DYNAMODB_TABLE}"]]
-        - "Fn::Join": ["", ["arn:aws:s3:::${self:provider.environment.DYNAMODB_TABLE}-bucket", "/*" ] ]
+        - dynamodb:BatchGetItem
+        - dynamodb:BatchWriteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.APP_NAME}"
+    - Effect: Allow
+      Action: # Gives permission to DynamoDB tables in a specific region
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.APP_NAME}/index/domain-index"
 
 package:
   individually: true
   exclude:
     - ./**
 
-
-
 functions:
 
   index:
-    handler: index
-    name: ${self:provider.environment.DYNAMODB_TABLE}_index
+    handler : back/dist/index.handler
+    name: ${self:service}_index
     description: First step of the OAuth Handshake
     events:
       - http:
@@ -52,11 +65,13 @@ functions:
           cors: true
     package:
       include:
-        - index
+        - ./back/dist/index.js
+        - ./back/dist/utils/index.js
+
   auth:
-    handler: auth
-    name: ${self:provider.environment.DYNAMODB_TABLE}_auth
-    description: First step of the OAuth Handshake
+    handler : back/dist/auth.handler
+    name: ${self:service}_auth
+    description: Second step of the OAuth Handshake
     events:
       - http:
           path: /auth
@@ -64,13 +79,13 @@ functions:
           cors: true
     package:
       include:
-        - auth
+        - ./back/dist/auth.js
+        - ./back/dist/utils/index.js
 
   auth_callback:
-    handler: auth_callback
-    name: ${self:provider.environment.DYNAMODB_TABLE}_auth_callback
-    description: Callback function for the OAuth Handshake
-
+    handler: back/dist/auth_callback.handler
+    name: ${self:service}_auth_callback
+    description: Third step of the OAuth Handshake
     events:
       - http:
           path: /auth/callback
@@ -78,21 +93,37 @@ functions:
           cors: true
     package:
       include:
-        - auth_callback
-
-  uninstall:
-    handler: webhooks/uninstall
-    name: ${self:provider.environment.DYNAMODB_TABLE}_webhooks_uninstall
-    description: Callback function for the OAuth Handshake
-
-    events:
-      - http:
-          path: /webhooks/uninstall
-          method: post
-          cors: true
-    package:
-      include:
-        - webhooks/uninstall
+        - ./back/dist/auth_callback.js
+        - ./back/dist/utils/index.js
+        - ./back/node_modules/node-fetch/**
+#
+#  auth_callback:
+#    handler: auth_callback
+#    name: ${self:service}_auth_callback
+#    description: Callback function for the OAuth Handshake
+#
+#    events:
+#      - http:
+#          path: /auth/callback
+#          method: get
+#          cors: true
+#    package:
+#      include:
+#        - auth_callback
+#
+#  uninstall:
+#    handler: webhooks/uninstall
+#    name: ${self:service}_webhooks_uninstall
+#    description: Callback function for the OAuth Handshake
+#
+#    events:
+#      - http:
+#          path: /webhooks/uninstall
+#          method: post
+#          cors: true
+#    package:
+#      include:
+#        - webhooks/uninstall
 
 
 resources:
@@ -100,28 +131,32 @@ resources:
 
     ShopsTable:
       Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
       Properties:
-        TableName: ${self:provider.environment.DYNAMODB_TABLE}
-
+        TableName: ${self:provider.environment.APP_NAME}
         AttributeDefinitions:
-          -
-            AttributeName: shopid
+          - AttributeName: shopId
             AttributeType: S
-
+          - AttributeName: domain
+            AttributeType: S
         KeySchema:
-          -
-            AttributeName: shopid
+          - AttributeName: shopId
             KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: domain-index
+            KeySchema:
+              - AttributeName: domain
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST
 
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
 
     S3Bucket:
       Type: AWS::S3::Bucket
 
       Properties:
-        BucketName: ${self:provider.environment.DYNAMODB_TABLE}-bucket
+        BucketName: ${self:service}-bucket
         AccessControl: PublicRead
         WebsiteConfiguration:
           IndexDocument: index.html
@@ -139,25 +174,10 @@ resources:
               Principal: "*"
               Action:
                 - s3:GetObject
-              Resource: arn:aws:s3:::${self:provider.environment.DYNAMODB_TABLE}-bucket/*
-
-  Outputs:
-
-    ShopsTable:
-      Description: "The name of the Shops Table"
-      Value:
-        Ref: ShopsTable
-
-    ShopsTableArn:
-      Description: "The ARN for the Shops Table"
-      Value:
-        Fn::GetAtt:
-          - ShopsTable
-          - Arn
-      Export:
-        Name: ShopsTableArn
+              Resource: arn:aws:s3:::${self:service}-bucket/*
 
 custom:
   client:
-    bucketName: ${self:provider.environment.DYNAMODB_TABLE}-bucket
+    bucketName: ${self:service}-bucket
     manageResources: false
+    distributionFolder : front/dist

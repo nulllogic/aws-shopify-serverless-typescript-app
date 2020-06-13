@@ -1,4 +1,4 @@
-# Shopify Serverless GO app
+# AWS Shopify Serverless Typescript App
 Easy way to setup your first Shopify application
 
 <p align="center">
