@@ -134,11 +134,3 @@ Become a Patreon:
     <img src="./img/patreon-button-png-10.png" height="40" />
 </a>
 
-<hr />
-
-<!-- ACKNOWLEDGEMENTS -->
-## Acknowledgements
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-
-
-

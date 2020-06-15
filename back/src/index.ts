@@ -16,7 +16,7 @@ async function getShopToken(
         TableName: tableName,
         IndexName: "domain-index",
         KeyConditionExpression: "#domain = :domain",
-        ExpressionAttributeNames:{
+        ExpressionAttributeNames: {
             "#domain": "domain"
         },
         ExpressionAttributeValues: {
@@ -58,14 +58,17 @@ export const handler: Handler = async (event: APIGatewayProxyEvent, context: Con
 
     const result = await getShopToken(shop);
 
-    if(result.Count > 0) {
+    if (result.Count > 0) {
 
         let token = result.Items[0].accessToken;
 
-        // Do to S3 endpoint
+        //Redirect to shop app
         return {
-            statusCode: 200,
-            body: "hjgjhjgghj"
+            statusCode: 301,
+            headers: {
+                Location: `https://${shop}/admin/apps/${_app}`
+            },
+            body: ""
         };
 
     } else {
