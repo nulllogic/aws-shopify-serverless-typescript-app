@@ -1,7 +1,7 @@
 {
-  "name": "shopify-serverless-auth",
+  "name": "shopify-serverless-auth-back",
   "version": "1.0.0",
-  "description": "Serverless AWS module for Shopify auth",
+  "description": "Serverless AWS module for Shopify backend",
   "main": "handler.js",
   "dependencies": {
     "node-fetch": "^2.6.0"
@@ -19,12 +19,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/andrew-templeton/shopify-serverless-auth.git"
+    "url": "git+https://github.com/nulllogic/aws-shopify-serverless-typescript-app.git"
   },
-  "author": "Andrew Templeton",
+  "author": "Vladimir Lukyanov",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/andrew-templeton/shopify-serverless-auth/issues"
+    "url": "https://github.com/nulllogic/aws-shopify-serverless-typescript-app/issues"
   },
-  "homepage": "https://github.com/andrew-templeton/shopify-serverless-auth#readme"
+  "homepage": "https://github.com/nulllogic/aws-shopify-serverless-typescript-app#readme",
+
 }
