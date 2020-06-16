@@ -140,4 +140,4 @@ Become a Patreon:
 
 <hr />
 
-<p align="center"><a target="_blank" rel="noopener noreferrer" href="https://store.steampowered.com/app/239030/Papers_Please/"><img src="./imgs/footer.png" alt="glory to arstotzka" style="max-width:100%;"></a></p>
+<p align="center"><a target="_blank" rel="noopener noreferrer" href="https://store.steampowered.com/app/239030/Papers_Please/"><img src="./.imgs/footer.png" alt="glory to arstotzka" style="max-width:100%;"></a></p>
