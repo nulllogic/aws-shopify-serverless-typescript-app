@@ -129,12 +129,15 @@ Distributed under the MIT License. See `LICENSE` for more information.
 Support by PayPal:
 
 <p><a href="https://www.paypal.me/vladimirlukyanov">
-    <img src="./imgs/paypal-button-png-10.png" height="40" />
+    <img src="./.imgs/paypal-button-png-10.png" height="40" />
 </a></p>
 
 Become a Patreon:
 
 <a href="https://www.patreon.com/vladimirlukyanov">
-    <img src="./imgs/patreon-button-png-10.png" height="40" />
+    <img src="./.imgs/patreon-button-png-10.png" height="40" />
 </a>
 
+<hr />
+
+<p align="center"><a target="_blank" rel="noopener noreferrer" href="https://store.steampowered.com/app/239030/Papers_Please/"><img src="./imgs/footer.png" alt="glory to arstotzka" style="max-width:100%;"></a></p>
