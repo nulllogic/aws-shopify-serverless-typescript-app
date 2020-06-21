@@ -5,6 +5,11 @@ import {DynamoDB} from 'aws-sdk'
 import {getAPIurl} from './utils'
 import * as AWS from "aws-sdk";
 
+/**
+ This file is responsible for handling Lambda event at AWS, when user would like to install Shopify App.
+ If we have token inside DynamoDB, then it will redirect to S3 bucket with code, otherwise it will redirect to next /auth Lambda event
+ */
+
 // Exchange the temporary code the permanent API token
 async function getShopToken(
     shop: string | null,
@@ -66,7 +71,7 @@ export const handler: Handler = async (event: APIGatewayProxyEvent, context: Con
         return {
             statusCode: 301,
             headers: {
-                Location: `https://${shop}/admin/apps/${_app}`
+                Location : `https://${_app}-bucket.s3.amazonaws.com/index.html?token=${token}&shop=${shop}`
             },
             body: ""
         };

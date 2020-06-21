@@ -1,0 +1,32 @@
+{
+  "name": "shopify-aws-lambda",
+  "version": "1.0.0",
+  "description": "Shopify Lambda",
+  "main": "index.js",
+  "scripts": {
+    "lint": "node node_modules/eslint/bin/eslint **/*.js --fix",
+    "install": "npm install --only=production",
+    "deploy": "node ./node_modules/serverless/bin/serverless.js deploy && node ./node_modules/serverless/bin/serverless.js client deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teresaritorto/shopify-webhook-lambda"
+  },
+  "keywords": [
+    "Shopify",
+    "Webhook",
+    "Serverless",
+    "API"
+  ],
+  "author": "Vladimir Lukyanov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nulllogic/aws-shopify-serverless-typescript-app/issues"
+  },
+  "homepage": "https://github.com/nulllogic/aws-shopify-serverless-typescript-app",
+  "dependencies": {
+    "serverless": "^1.73.1",
+    "serverless-finch": "^2.5.2",
+    "serverless-offline": "^6.4.0"
+  }
+}
