@@ -6,20 +6,23 @@
   "main": "app/js/index.js",
   "scripts": {
     "start": "webpack-dev-server",
-    "dev": "webpack-dev-server",
-    "build": "webpack"
+    "dev": "webpack-dev-server --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js"
   },
   "dependencies": {
     "@shopify/app-bridge-react": "^1.24.0",
     "@shopify/polaris": "^3.21.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-router-dom": "^5.2.0"
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
+    "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
     "@babel/preset-env": "^7.4.2",
     "@babel/preset-react": "^7.0.0",
+    "@shopify/app-bridge": "^1.24.0",
     "@types/webpack-dev-server": "^3.11.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.0.5",
@@ -28,6 +31,7 @@
     "css-loader": "^2.1.1",
     "html-webpack-plugin": "^3.2.0",
     "node-sass": "^4.14.1",
+    "query-string": "^6.13.1",
     "react-hot-loader": "^4.12.21",
     "rimraf": "^2.6.3",
     "sass-loader": "^8.0.2",
@@ -36,7 +40,8 @@
     "typescript": "^3.9.5",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0",
-    "webpack-dev-server": "^3.2.1"
+    "webpack-dev-server": "^3.2.1",
+    "webpack-merge": "^4.2.2"
   },
   "author": "Vladimir Lukyanov",
   "license": "MIT",

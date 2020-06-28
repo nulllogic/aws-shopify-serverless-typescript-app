@@ -1,8 +1,9 @@
 plugins:
   - serverless-finch
   - serverless-offline
+  - serverless-cloudfront-invalidate
 
-service: easyfields
+service: shopifyapp
 
 provider:
   name: aws
@@ -14,8 +15,7 @@ provider:
     SHOPIFY_API_KEY: ${ssm:/${self:service}/${self:provider.stage}/SHOPIFY_API_KEY}
     SHOPIFY_API_SECRET: ${ssm:/${self:service}/${self:provider.stage}/SHOPIFY_API_SECRET}
     SHOPIFY_SCOPE: "read_script_tags,write_script_tags,read_orders,write_orders,read_products,write_products"
-    APP_NAME : "shopifyapp" # your app name
-
+    APP_NAME : "shopifyapp"
 
   iamRoleStatements: # permissions for all of your functions can be set here
     - Effect: Allow
@@ -96,35 +96,19 @@ functions:
         - ./back/dist/auth_callback.js
         - ./back/dist/utils/index.js
         - ./back/node_modules/node-fetch/**
-#
-#  auth_callback:
-#    handler: auth_callback
-#    name: ${self:service}_auth_callback
-#    description: Callback function for the OAuth Handshake
-#
-#    events:
-#      - http:
-#          path: /auth/callback
-#          method: get
-#          cors: true
-#    package:
-#      include:
-#        - auth_callback
-#
-#  uninstall:
-#    handler: webhooks/uninstall
-#    name: ${self:service}_webhooks_uninstall
-#    description: Callback function for the OAuth Handshake
-#
-#    events:
-#      - http:
-#          path: /webhooks/uninstall
-#          method: post
-#          cors: true
-#    package:
-#      include:
-#        - webhooks/uninstall
-
+  token:
+    handler: back/dist/token.handler
+    name: ${self:service}_token
+    description: Get token from DynamoDB
+    events:
+      - http:
+          path: /token
+          method: post
+          cors: true
+    package:
+      include:
+        - ./back/dist/token.js
+        - ./back/dist/utils/index.js
 
 resources:
   Resources:
@@ -151,33 +135,75 @@ resources:
               ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
 
+    CloudFrontOriginAccessIdentity: # We use this name as Ref later
+      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment: CloudFront origin access identity
 
     S3Bucket:
       Type: AWS::S3::Bucket
-
       Properties:
         BucketName: ${self:service}-bucket
-        AccessControl: PublicRead
+        AccessControl: 'Private'
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: error.html
 
     S3BucketPolicy:
+      DependsOn:
+        - S3Bucket
+        - CloudFrontOriginAccessIdentity
       Type: AWS::S3::BucketPolicy
       Properties:
-        Bucket:
-          Ref: S3Bucket
+        Bucket: !Ref S3Bucket
         PolicyDocument:
           Statement:
-            - Sid: PublicReadGetObject
-              Effect: Allow
-              Principal: "*"
-              Action:
-                - s3:GetObject
-              Resource: arn:aws:s3:::${self:service}-bucket/*
+            Action:
+              - s3:GetObject
+              - s3:ListBucket
+            Effect: Allow
+            Resource:
+              - !Join ["", ["arn:aws:s3:::", !Ref S3Bucket]]
+              - !Join ["", ["arn:aws:s3:::", !Ref S3Bucket, "/*"]]
+            Principal:
+              AWS : !Join [" ", ["arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity", !Ref CloudFrontOriginAccessIdentity]]
+
+    CloudFrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      DependsOn:
+        - S3Bucket
+        - CloudFrontOriginAccessIdentity
+      Properties:
+        DistributionConfig:
+          Enabled: "true"
+          Origins:
+            - Id: !Ref S3Bucket
+              DomainName: !Join [".", [!Ref S3Bucket, "s3.amazonaws.com"]]
+              S3OriginConfig:
+                OriginAccessIdentity: !Join ["/", ["origin-access-identity/cloudfront", !Ref CloudFrontOriginAccessIdentity]]
+          PriceClass: PriceClass_100
+          DefaultCacheBehavior:
+            AllowedMethods:
+              - GET
+              - HEAD
+            ViewerProtocolPolicy: redirect-to-https # this is required
+            TargetOriginId: !Ref S3Bucket
+            ForwardedValues:
+              QueryString: false
+          DefaultRootObject: index.html
+          CustomErrorResponses: # For Single Page App
+            - ErrorCode: 404
+              ResponseCode: 200
+              ResponsePagePath: /index.html
 
 custom:
   client:
     bucketName: ${self:service}-bucket
     manageResources: false
     distributionFolder : front/dist
+  cloudfrontInvalidate:
+    distributionId: '' # Add your distribution ID
+    distributionIdKey: "CDNDistributionId" #conditional, distributionId or distributionIdKey is required.
+    items: # one or more paths required
+      - "/*"

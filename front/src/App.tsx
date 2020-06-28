@@ -1,4 +1,8 @@
-import React, {useState, useRef, useCallback} from "react";
+import React, {useState, useEffect, useRef, useCallback} from "react";
+import {BrowserRouter as Router} from 'react-router-dom'
+
+import Routes from './routes';
+
 import {
     AppProvider,
     Layout,
@@ -7,7 +11,14 @@ import {
     FormLayout,
     TextField,
     Page,
-    Toast,
+    FooterHelp,
+    Link,
+    Stack,
+    TextContainer,
+    Heading,
+    Subheading,
+    Badge,
+    Button,
     ContextualSaveBar,
     ActionList,
     TopBar,
@@ -15,11 +26,24 @@ import {
     SkeletonPage,
     Modal
 } from "@shopify/polaris";
-import {Provider, Loading} from "@shopify/app-bridge-react";
+
+import {apiRequest} from './utils/api'
+
+import {Provider, Toast} from '@shopify/app-bridge-react';
+
+import createApp from "@shopify/app-bridge";
+import {TitleBar} from "@shopify/app-bridge/actions";
+
 import '@shopify/polaris/styles.css';
 import * as styles from "./assets/scss/App.scss";
 
-import {getParameterByName} from './utils'
+/** Utils */
+import {getParameterByName, checkIfTokenIsValid} from './utils'
+import {USER_AUTH_KEY} from './utils/local-storage'
+import {redirect} from "@shopify/app-bridge/client/redirect";
+
+/* Hooks */
+import useShopifyToken from "./utils/hooks/shopify_token";
 
 const _i18n = {
     Polaris: {
@@ -38,45 +62,49 @@ const _i18n = {
     },
 };
 
-const _config = {
-    apiKey: getParameterByName('token', window.location.href),
-    shopOrigin: getParameterByName('shop', window.location.href),
-    forceRedirect: true
-};
 
 const App: React.FC = (props): JSX.Element => {
 
+    const [toast, setToast] = useState(true);
+
+    let _config = {
+        apiKey: '',
+        shopOrigin: '',
+        forceRedirect: false
+    }
+
+    if (!process.env.development) {
+
+        _config = {
+            apiKey: 'fea684e54dd7cf15a3f779e14e605469', // Change API here
+            shopOrigin: 'demo-d1.myshopify.com', // Change your SHOP ID here
+            forceRedirect: true
+        };
+
+    } else {
+
+        _config = {
+            apiKey: 'fea684e54dd7cf15a3f779e14e605469', // Change API key here
+            shopOrigin: '56ae37956d03.ngrok.io', // Change local Ngrok URL here
+            forceRedirect: false
+        }
+
+    }
 
     return (
-        <div style={{height: '500px'}}>
+        <Provider config={_config}>
+            <Toast content="Hello world!" onDismiss={() => {
+                setToast(false)
+            }}/>
             <AppProvider i18n={_i18n}>
-                <Provider config={_config}>
-                    <div style={{height: '500px'}}>
-                        <Frame>
-                            <Loading/>
-                            <div className={styles.container}>
-                                <Layout>
-                                    <Layout.AnnotatedSection
-                                        title="Store details"
-                                        description="Shopify and your customers will use this information to contact you."
-                                    >
-                                        <Card sectioned>
-                                            <FormLayout>
-                                                <TextField label="Store name" onChange={() => {
-                                                }}/>
-                                                <TextField type="email" label="Account email" onChange={() => {
-                                                }}/>
-                                            </FormLayout>
-                                        </Card>
-                                    </Layout.AnnotatedSection>
-                                </Layout>
-                            </div>
-                        </Frame>
-                    </div>
-                </Provider>
+                <div style={{minHeight: '500px'}}>
+                    <Router>
+                        <Routes/>
+                    </Router>
+                </div>
             </AppProvider>
-        </div>
+        </Provider>
     );
 }
 
-export default App
+export default App;

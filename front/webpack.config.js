@@ -4,7 +4,6 @@ const webpack = require('webpack');
 
 module.exports = {
     entry: './src/index.tsx',
-    mode: 'development',
     module: {
         rules: [
             {
@@ -39,16 +38,5 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js',
     },
-    devServer: {
-        host: '0.0.0.0',
-        port: 8080,
-        https: false,
-        contentBase: './dist',
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            filename: 'index.html',
-            template: './dist/index.html',
-        }),
-    ],
+    plugins: []
 };
