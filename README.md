@@ -4,7 +4,7 @@ Easy way to setup your first Shopify application
 <hr />
 <p align="center"> [ <a href="#about">About</a> ] – [ <a href="#install">Installation</a> ] – [ <a href="../../wiki">Documentation</a> ] – [ <a href="#contributing">Contributing</a> ] – [ <a href="#donate">Donate</a> ] </p>
 <p align="center">
-<img src="./.imgs/header.png" alt="Shopify + AWS = <3 ">
+<img src="./.imgs/header.jpg" alt="Shopify + AWS = <3 ">
 </p>
 
 <p align="center">
