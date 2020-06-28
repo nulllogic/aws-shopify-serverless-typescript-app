@@ -1,15 +1,19 @@
-# Shopify Serverless GO app
+# AWS Shopify Serverless Typescript App
 Easy way to setup your first Shopify application
 
-<p align="center">
-  <img src="./img/process.png" alt="Process example">
-</p>
 <hr />
-<p align="center"> [ Demo ] — [ Documentation ] </p>
+<p align="center"> [ <a href="#about">About</a> ] – [ <a href="#install">Installation</a> ] – [ <a href="../../wiki">Documentation</a> ] – [ <a href="#contributing">Contributing</a> ] – [ <a href="#donate">Donate</a> ] </p>
 <p align="center">
-  <img src="./img/logo.gif" alt="NullLogic logo">
+<img src="./.imgs/header.png" alt="Shopify + AWS = <3 ">
 </p>
 
+<p align="center">
+  <img src="./.imgs/logo.gif" alt="NullLogic logo">
+</p>
+
+<!-- install -->
+
+## Installation
 
 
 <!-- TABLE OF CONTENTS -->
@@ -125,20 +129,15 @@ Distributed under the MIT License. See `LICENSE` for more information.
 Support by PayPal:
 
 <p><a href="https://www.paypal.me/vladimirlukyanov">
-    <img src="./img/paypal-button-png-10.png" height="40" />
+    <img src="./.imgs/paypal-button-png-10.png" height="40" />
 </a></p>
 
 Become a Patreon:
 
 <a href="https://www.patreon.com/vladimirlukyanov">
-    <img src="./img/patreon-button-png-10.png" height="40" />
+    <img src="./.imgs/patreon-button-png-10.png" height="40" />
 </a>
 
 <hr />
 
-<!-- ACKNOWLEDGEMENTS -->
-## Acknowledgements
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-
-
-
+<p align="left"><a target="_blank" rel="noopener noreferrer" href="https://store.steampowered.com/app/239030/Papers_Please/"><img src="./.imgs/footer.png" alt="glory to arstotzka" style="max-width:100%;"></a></p>
