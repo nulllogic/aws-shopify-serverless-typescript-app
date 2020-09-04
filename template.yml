@@ -1,6 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: The AWS template for this Serverless Shopify application
 Resources:
+
   CloudFrontOriginAccessIdentity:
     Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
     Properties:
@@ -69,6 +70,7 @@ Resources:
               - ' '
               - - 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity'
                 - !Ref CloudFrontOriginAccessIdentity
+
   S3Bucket:
     Type: 'AWS::S3::Bucket'
     Properties:
@@ -78,3 +80,108 @@ Resources:
         IndexDocument: index.html
         ErrorDocument: error.html
 
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      InstanceTenancy: default
+
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: eu-west-1a
+      CidrBlock: 10.0.0.0/24
+      VpcId:
+        Ref: VPC
+
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: eu-west-1b
+      CidrBlock: 10.0.8.0/24
+      VpcId:
+        Ref: VPC
+
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: eu-west-1c
+      CidrBlock: 10.0.32.0/24
+      VpcId:
+        Ref: VPC
+
+  Database:
+    Type: AWS::RDS::DBCluster
+    Properties:
+      DatabaseName: ${self:custom.dbName}
+      Engine: aurora-postgresql
+      EngineMode: serverless
+      MasterUsername: ${self:custom.dbUserName}
+      MasterUserPassword: ${self:custom.dbPassword}
+      ScalingConfiguration:
+        AutoPause: true
+        MaxCapacity: 16
+        MinCapacity: 2
+        SecondsUntilAutoPause: 300
+      DBSubnetGroupName:
+        Ref: DBSubnetGroup
+      VpcSecurityGroupIds:
+        - Ref: DatabaseVpcSecurityGroup
+
+  DBSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties:
+      DBSubnetGroupDescription: "database subnet group"
+      SubnetIds:
+        - Ref: PrivateSubnet1
+        - Ref: PrivateSubnet2
+
+  DatabaseVpcSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupName: DBSecurityGroup
+      GroupDescription: Allow local access
+      SecurityGroupIngress:
+        - CidrIp: 10.0.0.0/16
+          IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+      VpcId:
+        Ref: VPC
+
+Outputs:
+  ServerlessDeploymentBucketName:
+    Value: !Ref ServerlessDeploymentBucket
+  IndexLambdaFunctionQualifiedArn:
+    Description: Current Lambda function version
+    Value: !Ref IndexLambdaVersionojlPCzl9HZCNdQlBO9Q0cXlhJcocA4yHEC8z5T5KQ
+  AuthLambdaFunctionQualifiedArn:
+    Description: Current Lambda function version
+    Value: !Ref AuthLambdaVersionT5qF17j6mW8Ss9r5YZs1goJFgtYzHjLMJEV8LdhiMVg
+  AuthUnderscorecallbackLambdaFunctionQualifiedArn:
+    Description: Current Lambda function version
+    Value: !Ref >-
+      AuthUnderscorecallbackLambdaVersionFTOCArkCxQjwUZtN5Q6M0vmz9v1FuXGp5CbK1GpA
+  TokenLambdaFunctionQualifiedArn:
+    Description: Current Lambda function version
+    Value: !Ref TokenLambdaVersion2HM94JIFJDJuLo5YGOrfJrGj3kqCV5xBokCVGprxxw
+  UninstallLambdaFunctionQualifiedArn:
+    Description: Current Lambda function version
+    Value: !Ref UninstallLambdaVersionjG8I6mEiC81U8B1ARM0lIxfXxMnH08H5QIOFd7yuE
+  ServiceEndpoint:
+    Description: URL of the service endpoint
+    Value: !Join
+      - ''
+      - - 'https://'
+        - !Ref ApiGatewayRestApi
+        - .execute-api.
+        - !Ref 'AWS::Region'
+        - .
+        - !Ref 'AWS::URLSuffix'
+        - /prod
+  CloudFrontDomain:
+    Description: CloudFront Domain
+    Value: !Ref CloudFrontDistribution
+  ApiGatewayEndpoint:
+    Description: API enpoint
+    Value: !Ref ApiGatewayRestApi
