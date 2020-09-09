@@ -18,15 +18,9 @@ Resources:
         Enabled: 'true'
         Origins:
           - Id: !Ref S3Bucket
-            DomainName: !Join
-              - .
-              - - !Ref S3Bucket
-                - s3.amazonaws.com
+            DomainName : !Join ['.', [!Ref S3Bucket, 's3.amazonaws.com' ]]
             S3OriginConfig:
-              OriginAccessIdentity: !Join
-                - /
-                - - origin-access-identity/cloudfront
-                  - !Ref CloudFrontOriginAccessIdentity
+              OriginAccessIdentity: !Join [/, [origin-access-identity/cloudfront, !Ref CloudFrontOriginAccessIdentity ]]
         PriceClass: PriceClass_100
         DefaultCacheBehavior:
           AllowedMethods:
@@ -56,20 +50,10 @@ Resources:
             - 's3:ListBucket'
           Effect: Allow
           Resource:
-            - !Join
-              - ''
-              - - 'arn:aws:s3:::'
-                - !Ref S3Bucket
-            - !Join
-              - ''
-              - - 'arn:aws:s3:::'
-                - !Ref S3Bucket
-                - /*
+            - !Join ['', ['arn:aws:s3:::', !Ref S3Bucket]]
+            - !Join ['', ['arn:aws:s3:::', !Ref S3Bucket, /*]]
           Principal:
-            AWS: !Join
-              - ' '
-              - - 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity'
-                - !Ref CloudFrontOriginAccessIdentity
+            AWS: !Join [' ', ['arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity', !Ref CloudFrontOriginAccessIdentity]]
 
   S3Bucket:
     Type: 'AWS::S3::Bucket'
@@ -148,6 +132,12 @@ Resources:
           ToPort: 3306
       VpcId:
         Ref: VPC
+
+  GraphQLApi:
+    Type: "AWS::AppSync::GraphQLApi"
+    Properties:
+      Name: AWSAppSync
+      AuthenticationType: AWS_IAM
 
 Outputs:
   ServerlessDeploymentBucketName:
