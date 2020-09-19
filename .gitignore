@@ -3,3 +3,4 @@ node_modules
 .idea
 client/src/node_modules
 client/dist
+**/package-lock.json
