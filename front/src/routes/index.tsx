@@ -31,5 +31,4 @@ const Routes: React.FC = (props: RouteComponentProps): JSX.Element => {
     );
 }
 
-
 export default withRouter(Routes);
