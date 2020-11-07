@@ -22,10 +22,12 @@ const Routes: React.FC = (props: RouteComponentProps): JSX.Element => {
 
     return (
         <Switch>
+
             <Route exact path="/" component={Welcome}/>
             <Route exact path="/products" component={Products}/>
 
             <Route exact path="/install" component={Install}/>
+
         </Switch>
 
     );
