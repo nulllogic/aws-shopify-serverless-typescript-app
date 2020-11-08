@@ -8,8 +8,6 @@ const useShopifyToken = () => {
 
     let _shopifyToken = '';
 
-    console.log(window.location.search);
-
     if(localStorage.getItem(USER_AUTH_KEY)) {
         _shopifyToken = localStorage.getItem(USER_AUTH_KEY).toString();
     }
