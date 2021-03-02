@@ -2,11 +2,19 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: The AWS template for this Serverless Shopify application
 Resources:
 
+  ##########################################################################
+  #  CloudFront Origin Access Identity
+  ##########################################################################
+
   CloudFrontOriginAccessIdentity:
     Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
     Properties:
       CloudFrontOriginAccessIdentityConfig:
         Comment: CloudFront origin access identity
+
+  ##########################################################################
+  #  CloudFront
+  ##########################################################################
 
   CloudFrontDistribution:
     Type: 'AWS::CloudFront::Distribution'
@@ -35,6 +43,10 @@ Resources:
           - ErrorCode: 404
             ResponseCode: 200
             ResponsePagePath: /index.html
+
+  ##########################################################################
+  #  S3 Buckets                                                            #
+  ##########################################################################
 
   S3BucketPolicy:
     DependsOn:
