@@ -1,7 +1,8 @@
-AWSTemplateFormatVersion: 2010-09-09
-Description: The AWS template for this Serverless Shopify application
-Resources:
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  The AWS template for Shopify application
 
+Resources:
   ##########################################################################
   #  CloudFront Origin Access Identity
   ##########################################################################
@@ -45,7 +46,7 @@ Resources:
             ResponsePagePath: /index.html
 
   ##########################################################################
-  #  S3 Buckets                                                            #
+  #  S3 Buckets
   ##########################################################################
 
   S3BucketPolicy:
@@ -150,6 +151,10 @@ Resources:
     Properties:
       Name: AWSAppSync
       AuthenticationType: AWS_IAM
+
+##########################################################################
+#   Outputs
+##########################################################################
 
 Outputs:
   ServerlessDeploymentBucketName:

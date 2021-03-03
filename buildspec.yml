@@ -1,0 +1,6 @@
+#
+# AWS Codebuild specifications
+# This file is only used for internal deployment of the code on each public commit
+# It is NOT needed if you're demoing or developing locally
+#
+
