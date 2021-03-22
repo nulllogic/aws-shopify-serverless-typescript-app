@@ -2,7 +2,7 @@
 
 help:
 	@echo "help"
-	@echo "build"
+	@echo "build - build the docker environment"
 build:
 	@read -p "Enter application ame:" application; \
 	aws cloudformation deploy --template template.yml --stack-name $$application
